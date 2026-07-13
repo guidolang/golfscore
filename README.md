@@ -3,7 +3,7 @@
 GolfScore is a simple iPhone scorekeeper for a round of golf. Track strokes for each hole, switch between 9-hole and 18-hole views, and add strokes from the Lock Screen while a hole is open. Scores and stroke timestamps stay on the device until they are reset.
 
 <p align="center">
-  <img src="docs/golfscore-screenshot.png" alt="GolfScore home screen" width="320">
+  <img src="docs/golfscore-demo.gif" alt="GolfScore app demonstration" width="320">
 </p>
 
 ## Install On Your iPhone
