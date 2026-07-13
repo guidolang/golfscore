@@ -1,0 +1,728 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* GolfScoreApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* GolfScoreApp.swift */; };
+		A10000000000000000000002 /* RoundModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* RoundModels.swift */; };
+		A10000000000000000000003 /* RoundPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* RoundPersistence.swift */; };
+		A10000000000000000000004 /* RoundStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* RoundStore.swift */; };
+		A10000000000000000000005 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* HomeView.swift */; };
+		A10000000000000000000006 /* HoleDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* HoleDetailView.swift */; };
+		A10000000000000000000007 /* StrokeTimestampText.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* StrokeTimestampText.swift */; };
+		A10000000000000000000008 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* Assets.xcassets */; };
+		A10000000000000000000009 /* RoundStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* RoundStoreTests.swift */; };
+		A1000000000000000000000A /* GolfScoreUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* GolfScoreUITests.swift */; };
+		A1000000000000000000000F /* HoleActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000F /* HoleActivityAttributes.swift */; };
+		A10000000000000000000010 /* HoleLiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* HoleLiveActivityController.swift */; };
+		A10000000000000000000011 /* GolfScoreLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* GolfScoreLiveActivity.swift */; };
+		A10000000000000000000012 /* AddStrokeIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* AddStrokeIntent.swift */; };
+		A10000000000000000000013 /* HoleActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000F /* HoleActivityAttributes.swift */; };
+		A10000000000000000000014 /* RoundModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* RoundModels.swift */; };
+		A10000000000000000000015 /* RoundPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* RoundPersistence.swift */; };
+		A10000000000000000000016 /* GolfScoreLiveActivity.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A20000000000000000000016 /* GolfScoreLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A10000000000000000000017 /* AddStrokeIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* AddStrokeIntent.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A30000000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A40000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A50000000000000000000001;
+			remoteInfo = GolfScore;
+		};
+		A30000000000000000000002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A40000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A50000000000000000000001;
+			remoteInfo = GolfScore;
+		};
+		A30000000000000000000003 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A40000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A50000000000000000000004;
+			remoteInfo = GolfScoreLiveActivity;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AD0000000000000000000001 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A10000000000000000000016 /* GolfScoreLiveActivity.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A20000000000000000000001 /* GolfScoreApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GolfScoreApp.swift; sourceTree = "<group>"; };
+		A20000000000000000000002 /* RoundModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundModels.swift; sourceTree = "<group>"; };
+		A20000000000000000000003 /* RoundPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundPersistence.swift; sourceTree = "<group>"; };
+		A20000000000000000000004 /* RoundStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundStore.swift; sourceTree = "<group>"; };
+		A20000000000000000000005 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A20000000000000000000006 /* HoleDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoleDetailView.swift; sourceTree = "<group>"; };
+		A20000000000000000000007 /* StrokeTimestampText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeTimestampText.swift; sourceTree = "<group>"; };
+		A20000000000000000000008 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A20000000000000000000009 /* RoundStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundStoreTests.swift; sourceTree = "<group>"; };
+		A2000000000000000000000A /* GolfScoreUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GolfScoreUITests.swift; sourceTree = "<group>"; };
+		A2000000000000000000000B /* GolfScore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GolfScore.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2000000000000000000000C /* GolfScoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GolfScoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2000000000000000000000D /* GolfScoreUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GolfScoreUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2000000000000000000000F /* HoleActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoleActivityAttributes.swift; sourceTree = "<group>"; };
+		A20000000000000000000010 /* HoleLiveActivityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoleLiveActivityController.swift; sourceTree = "<group>"; };
+		A20000000000000000000011 /* GolfScoreLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GolfScoreLiveActivity.swift; sourceTree = "<group>"; };
+		A20000000000000000000012 /* AddStrokeIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStrokeIntent.swift; sourceTree = "<group>"; };
+		A20000000000000000000013 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000000000000000000014 /* GolfScore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GolfScore.entitlements; sourceTree = "<group>"; };
+		A20000000000000000000015 /* GolfScoreLiveActivity.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GolfScoreLiveActivity.entitlements; sourceTree = "<group>"; };
+		A20000000000000000000016 /* GolfScoreLiveActivity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GolfScoreLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A60000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A60000000000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A60000000000000000000003 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A60000000000000000000004 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A70000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A70000000000000000000002 /* GolfScore */,
+				A7000000000000000000000A /* GolfScoreLiveActivity */,
+				A70000000000000000000007 /* GolfScoreTests */,
+				A70000000000000000000008 /* GolfScoreUITests */,
+				A70000000000000000000009 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A70000000000000000000002 /* GolfScore */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000001 /* GolfScoreApp.swift */,
+				A70000000000000000000003 /* Models */,
+				A70000000000000000000004 /* Services */,
+				A70000000000000000000005 /* Stores */,
+				A70000000000000000000006 /* Views */,
+				A7000000000000000000000B /* LiveActivity */,
+				A20000000000000000000008 /* Assets.xcassets */,
+				A20000000000000000000014 /* GolfScore.entitlements */,
+			);
+			path = GolfScore;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000003 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000002 /* RoundModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000004 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000003 /* RoundPersistence.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000005 /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000004 /* RoundStore.swift */,
+			);
+			path = Stores;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000006 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000005 /* HomeView.swift */,
+				A20000000000000000000006 /* HoleDetailView.swift */,
+				A20000000000000000000007 /* StrokeTimestampText.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000007 /* GolfScoreTests */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000009 /* RoundStoreTests.swift */,
+			);
+			path = GolfScoreTests;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000008 /* GolfScoreUITests */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000A /* GolfScoreUITests.swift */,
+			);
+			path = GolfScoreUITests;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000009 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000B /* GolfScore.app */,
+				A2000000000000000000000C /* GolfScoreTests.xctest */,
+				A2000000000000000000000D /* GolfScoreUITests.xctest */,
+				A20000000000000000000016 /* GolfScoreLiveActivity.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A7000000000000000000000A /* GolfScoreLiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000011 /* GolfScoreLiveActivity.swift */,
+				A20000000000000000000013 /* Info.plist */,
+				A20000000000000000000015 /* GolfScoreLiveActivity.entitlements */,
+			);
+			path = GolfScoreLiveActivity;
+			sourceTree = "<group>";
+		};
+		A7000000000000000000000B /* LiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000F /* HoleActivityAttributes.swift */,
+				A20000000000000000000010 /* HoleLiveActivityController.swift */,
+				A20000000000000000000012 /* AddStrokeIntent.swift */,
+			);
+			path = LiveActivity;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A50000000000000000000001 /* GolfScore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0000000000000000000001 /* Build configuration list for PBXNativeTarget "GolfScore" */;
+			buildPhases = (
+				A80000000000000000000001 /* Sources */,
+				A60000000000000000000001 /* Frameworks */,
+				A90000000000000000000001 /* Resources */,
+				AD0000000000000000000001 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AB0000000000000000000003 /* PBXTargetDependency */,
+			);
+			name = GolfScore;
+			productName = GolfScore;
+			productReference = A2000000000000000000000B /* GolfScore.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A50000000000000000000002 /* GolfScoreTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0000000000000000000002 /* Build configuration list for PBXNativeTarget "GolfScoreTests" */;
+			buildPhases = (
+				A80000000000000000000002 /* Sources */,
+				A60000000000000000000002 /* Frameworks */,
+				A90000000000000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AB0000000000000000000001 /* PBXTargetDependency */,
+			);
+			name = GolfScoreTests;
+			productName = GolfScoreTests;
+			productReference = A2000000000000000000000C /* GolfScoreTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A50000000000000000000003 /* GolfScoreUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0000000000000000000003 /* Build configuration list for PBXNativeTarget "GolfScoreUITests" */;
+			buildPhases = (
+				A80000000000000000000003 /* Sources */,
+				A60000000000000000000003 /* Frameworks */,
+				A90000000000000000000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AB0000000000000000000002 /* PBXTargetDependency */,
+			);
+			name = GolfScoreUITests;
+			productName = GolfScoreUITests;
+			productReference = A2000000000000000000000D /* GolfScoreUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		A50000000000000000000004 /* GolfScoreLiveActivity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0000000000000000000004 /* Build configuration list for PBXNativeTarget "GolfScoreLiveActivity" */;
+			buildPhases = (
+				A80000000000000000000004 /* Sources */,
+				A60000000000000000000004 /* Frameworks */,
+				A90000000000000000000004 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GolfScoreLiveActivity;
+			productName = GolfScoreLiveActivity;
+			productReference = A20000000000000000000016 /* GolfScoreLiveActivity.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A40000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2660;
+				LastUpgradeCheck = 2660;
+				TargetAttributes = {
+					A50000000000000000000001 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					A50000000000000000000002 = {
+						CreatedOnToolsVersion = 26.6;
+						TestTargetID = A50000000000000000000001;
+					};
+					A50000000000000000000003 = {
+						CreatedOnToolsVersion = 26.6;
+						TestTargetID = A50000000000000000000001;
+					};
+					A50000000000000000000004 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+				};
+			};
+			buildConfigurationList = AA0000000000000000000000 /* Build configuration list for PBXProject "GolfScore" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A70000000000000000000001;
+			productRefGroup = A70000000000000000000009 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+				targets = (
+				A50000000000000000000001 /* GolfScore */,
+				A50000000000000000000002 /* GolfScoreTests */,
+				A50000000000000000000003 /* GolfScoreUITests */,
+				A50000000000000000000004 /* GolfScoreLiveActivity */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A90000000000000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000008 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A90000000000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A90000000000000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A90000000000000000000004 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A80000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000001 /* GolfScoreApp.swift in Sources */,
+				A10000000000000000000002 /* RoundModels.swift in Sources */,
+				A10000000000000000000003 /* RoundPersistence.swift in Sources */,
+				A10000000000000000000004 /* RoundStore.swift in Sources */,
+				A10000000000000000000005 /* HomeView.swift in Sources */,
+				A10000000000000000000006 /* HoleDetailView.swift in Sources */,
+				A10000000000000000000007 /* StrokeTimestampText.swift in Sources */,
+				A1000000000000000000000F /* HoleActivityAttributes.swift in Sources */,
+				A10000000000000000000010 /* HoleLiveActivityController.swift in Sources */,
+				A10000000000000000000017 /* AddStrokeIntent.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A80000000000000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000009 /* RoundStoreTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A80000000000000000000003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000000000000000000000A /* GolfScoreUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A80000000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000011 /* GolfScoreLiveActivity.swift in Sources */,
+				A10000000000000000000012 /* AddStrokeIntent.swift in Sources */,
+				A10000000000000000000013 /* HoleActivityAttributes.swift in Sources */,
+				A10000000000000000000014 /* RoundModels.swift in Sources */,
+				A10000000000000000000015 /* RoundPersistence.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AB0000000000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A50000000000000000000001 /* GolfScore */;
+			targetProxy = A30000000000000000000001 /* PBXContainerItemProxy */;
+		};
+		AB0000000000000000000002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A50000000000000000000001 /* GolfScore */;
+			targetProxy = A30000000000000000000002 /* PBXContainerItemProxy */;
+		};
+		AB0000000000000000000003 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A50000000000000000000004 /* GolfScoreLiveActivity */;
+			targetProxy = A30000000000000000000003 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		AC0000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AC0000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AC0000000000000000000011 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = GolfScore/GolfScore.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.guidolang.golfscore;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AC0000000000000000000012 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = GolfScore/GolfScore.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.guidolang.golfscore;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		AC0000000000000000000021 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.guidolang.golfscore.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GolfScore.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GolfScore";
+			};
+			name = Debug;
+		};
+		AC0000000000000000000022 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.guidolang.golfscore.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GolfScore.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GolfScore";
+			};
+			name = Release;
+		};
+		AC0000000000000000000031 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.guidolang.golfscore.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = GolfScore;
+			};
+			name = Debug;
+		};
+		AC0000000000000000000032 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.guidolang.golfscore.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = GolfScore;
+			};
+			name = Release;
+		};
+		AC0000000000000000000041 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = GolfScoreLiveActivity/GolfScoreLiveActivity.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = GolfScoreLiveActivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.guidolang.golfscore.liveactivity;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AC0000000000000000000042 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = GolfScoreLiveActivity/GolfScoreLiveActivity.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = GolfScoreLiveActivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.guidolang.golfscore.liveactivity;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AA0000000000000000000000 /* Build configuration list for PBXProject "GolfScore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC0000000000000000000001 /* Debug */,
+				AC0000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0000000000000000000001 /* Build configuration list for PBXNativeTarget "GolfScore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC0000000000000000000011 /* Debug */,
+				AC0000000000000000000012 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0000000000000000000002 /* Build configuration list for PBXNativeTarget "GolfScoreTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC0000000000000000000021 /* Debug */,
+				AC0000000000000000000022 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0000000000000000000003 /* Build configuration list for PBXNativeTarget "GolfScoreUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC0000000000000000000031 /* Debug */,
+				AC0000000000000000000032 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0000000000000000000004 /* Build configuration list for PBXNativeTarget "GolfScoreLiveActivity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC0000000000000000000041 /* Debug */,
+				AC0000000000000000000042 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A40000000000000000000001 /* Project object */;
+}

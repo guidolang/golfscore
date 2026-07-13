@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>GolfScore app icon</title>
+  <desc>A centered white golf ball with subtle gray dimples on a green background.</desc>
+
+  <defs>
+    <radialGradient id="ball" cx="42%" cy="35%" r="72%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="78%" stop-color="#FEFEFE"/>
+      <stop offset="100%" stop-color="#F8F9F8"/>
+    </radialGradient>
+    <clipPath id="ballClip">
+      <circle cx="512" cy="512" r="350"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1024" height="1024" fill="#0B7F41"/>
+  <circle cx="512" cy="512" r="350" fill="url(#ball)"/>
+
+  <g clip-path="url(#ballClip)" fill="#ECEEED" opacity="0.68">
+    <g transform="translate(512 512) scale(1.15) translate(-512 -512)">
+    <!-- Top arc -->
+    <ellipse cx="420" cy="223" rx="21" ry="7" transform="rotate(-8 420 223)"/>
+    <ellipse cx="512" cy="210" rx="24" ry="7"/>
+    <ellipse cx="604" cy="223" rx="21" ry="7" transform="rotate(8 604 223)"/>
+
+    <!-- Upper rows -->
+    <ellipse cx="337" cy="278" rx="15" ry="23" transform="rotate(43 337 278)"/>
+    <ellipse cx="419" cy="268" rx="29" ry="21" transform="rotate(-18 419 268)"/>
+    <ellipse cx="512" cy="260" rx="31" ry="21"/>
+    <ellipse cx="605" cy="268" rx="29" ry="21" transform="rotate(18 605 268)"/>
+    <ellipse cx="687" cy="278" rx="15" ry="23" transform="rotate(-43 687 278)"/>
+
+    <ellipse cx="287" cy="349" rx="12" ry="24" transform="rotate(24 287 349)"/>
+    <ellipse cx="366" cy="342" rx="27" ry="31" transform="rotate(30 366 342)"/>
+    <ellipse cx="463" cy="333" rx="32" ry="30" transform="rotate(-10 463 333)"/>
+    <ellipse cx="561" cy="333" rx="32" ry="30" transform="rotate(10 561 333)"/>
+    <ellipse cx="658" cy="342" rx="27" ry="31" transform="rotate(-30 658 342)"/>
+    <ellipse cx="737" cy="349" rx="12" ry="24" transform="rotate(-24 737 349)"/>
+
+    <!-- Middle rows -->
+    <ellipse cx="258" cy="432" rx="10" ry="27" transform="rotate(10 258 432)"/>
+    <ellipse cx="334" cy="425" rx="25" ry="31" transform="rotate(12 334 425)"/>
+    <ellipse cx="423" cy="418" rx="31" ry="32" transform="rotate(-8 423 418)"/>
+    <ellipse cx="512" cy="416" rx="33" ry="33"/>
+    <ellipse cx="601" cy="418" rx="31" ry="32" transform="rotate(8 601 418)"/>
+    <ellipse cx="690" cy="425" rx="25" ry="31" transform="rotate(-12 690 425)"/>
+    <ellipse cx="766" cy="432" rx="10" ry="27" transform="rotate(-10 766 432)"/>
+
+    <ellipse cx="250" cy="520" rx="9" ry="28"/>
+    <ellipse cx="322" cy="516" rx="24" ry="33"/>
+    <ellipse cx="414" cy="512" rx="32" ry="34"/>
+    <ellipse cx="512" cy="510" rx="34" ry="35"/>
+    <ellipse cx="610" cy="512" rx="32" ry="34"/>
+    <ellipse cx="702" cy="516" rx="24" ry="33"/>
+    <ellipse cx="774" cy="520" rx="9" ry="28"/>
+
+    <ellipse cx="258" cy="608" rx="10" ry="27" transform="rotate(-10 258 608)"/>
+    <ellipse cx="334" cy="601" rx="25" ry="31" transform="rotate(-12 334 601)"/>
+    <ellipse cx="423" cy="594" rx="31" ry="32" transform="rotate(8 423 594)"/>
+    <ellipse cx="512" cy="592" rx="33" ry="33"/>
+    <ellipse cx="601" cy="594" rx="31" ry="32" transform="rotate(-8 601 594)"/>
+    <ellipse cx="690" cy="601" rx="25" ry="31" transform="rotate(12 690 601)"/>
+    <ellipse cx="766" cy="608" rx="10" ry="27" transform="rotate(10 766 608)"/>
+
+    <!-- Lower rows -->
+    <ellipse cx="287" cy="691" rx="12" ry="24" transform="rotate(-24 287 691)"/>
+    <ellipse cx="366" cy="684" rx="27" ry="31" transform="rotate(-30 366 684)"/>
+    <ellipse cx="463" cy="675" rx="32" ry="30" transform="rotate(10 463 675)"/>
+    <ellipse cx="561" cy="675" rx="32" ry="30" transform="rotate(-10 561 675)"/>
+    <ellipse cx="658" cy="684" rx="27" ry="31" transform="rotate(30 658 684)"/>
+    <ellipse cx="737" cy="691" rx="12" ry="24" transform="rotate(24 737 691)"/>
+
+    <ellipse cx="337" cy="762" rx="15" ry="23" transform="rotate(-43 337 762)"/>
+    <ellipse cx="419" cy="752" rx="29" ry="21" transform="rotate(18 419 752)"/>
+    <ellipse cx="512" cy="760" rx="31" ry="21"/>
+    <ellipse cx="605" cy="752" rx="29" ry="21" transform="rotate(-18 605 752)"/>
+    <ellipse cx="687" cy="762" rx="15" ry="23" transform="rotate(43 687 762)"/>
+
+    <!-- Bottom arc -->
+    <ellipse cx="420" cy="801" rx="21" ry="7" transform="rotate(8 420 801)"/>
+    <ellipse cx="512" cy="814" rx="24" ry="7"/>
+    <ellipse cx="604" cy="801" rx="21" ry="7" transform="rotate(-8 604 801)"/>
+    </g>
+  </g>
+</svg>

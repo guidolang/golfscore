@@ -1,0 +1,49 @@
+# GolfScore
+
+GolfScore is a simple iPhone scorekeeper for a round of golf. Track up to nine strokes per hole, switch between 9-hole and 18-hole views, and add strokes from the Lock Screen while a hole is open. Scores and stroke timestamps stay on the device until they are reset.
+
+<p align="center">
+  <img src="docs/golfscore-screenshot.png" alt="GolfScore home screen" width="320">
+</p>
+
+## Install On Your iPhone
+
+You need a Mac, an iPhone, and a USB cable to install GolfScore on your iPhone. If you need help, I suggest asking an AI assistant to walk you through it step by step. Just copy and paste this prompt:
+
+```
+I want to install an iPhone app from GitHub onto my own iPhone using Xcode. Please guide me one step at a time and wait for me to confirm each step before continuing.
+
+The app is called GolfScore. I need help with:
+- installing Xcode
+- downloading the GitHub repository (https://github.com/guidolang/golfscore)
+- opening `GolfScore.xcodeproj` in Xcode
+- selecting my iPhone as the run destination
+- setting up Signing & Capabilities with my Apple ID
+- changing the bundle identifiers and App Group identifier if necessary
+- running the app on my iPhone
+- enabling Developer Mode or trusting the developer account if iOS asks
+
+Also explain that without an active Apple Developer Program membership, the app will need to be reinstalled after 7 days.
+```
+
+## Development
+
+Build:
+
+```sh
+xcodebuild build -project GolfScore.xcodeproj -scheme GolfScore -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+```
+
+Test:
+
+```sh
+xcodebuild test -project GolfScore.xcodeproj -scheme GolfScore -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+```
+
+## Privacy
+
+GolfScore does not collect or transmit personal data. The active round and its stroke timestamps are stored locally on the device.
+
+## Support
+
+For support, bug reports, or feature requests, please open a [GitHub issue](https://github.com/guidolang/golfscore/issues).
