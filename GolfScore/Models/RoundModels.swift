@@ -1,9 +1,5 @@
 import Foundation
 
-enum ScoreRules {
-    static let maximumStrokesPerHole = 9
-}
-
 struct StrokeRecord: Codable, Equatable, Identifiable {
     let id: UUID
     let timestamp: Date
@@ -36,6 +32,5 @@ struct RoundState: Codable, Equatable {
     var isValid: Bool {
         holes.count == Self.holeNumbers.count
             && holes.map(\.id) == Self.holeNumbers
-            && holes.allSatisfy { $0.strokes.count <= ScoreRules.maximumStrokesPerHole }
     }
 }

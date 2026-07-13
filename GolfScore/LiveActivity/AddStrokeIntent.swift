@@ -24,8 +24,7 @@ struct AddStrokeIntent: LiveActivityIntent {
         var round = persistence.load() ?? .empty
 
         guard round.isValid,
-              let index = round.holes.firstIndex(where: { $0.id == holeNumber }),
-              round.holes[index].strokes.count < ScoreRules.maximumStrokesPerHole else {
+              let index = round.holes.firstIndex(where: { $0.id == holeNumber }) else {
             return .result()
         }
 

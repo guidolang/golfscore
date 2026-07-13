@@ -88,6 +88,8 @@
 		A20000000000000000000014 /* GolfScore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GolfScore.entitlements; sourceTree = "<group>"; };
 		A20000000000000000000015 /* GolfScoreLiveActivity.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GolfScoreLiveActivity.entitlements; sourceTree = "<group>"; };
 		A20000000000000000000016 /* GolfScoreLiveActivity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GolfScoreLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000017 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
+		A20000000000000000000018 /* Local.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Local.example.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 		A70000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				A7000000000000000000000C /* Config */,
 				A70000000000000000000002 /* GolfScore */,
 				A7000000000000000000000A /* GolfScoreLiveActivity */,
 				A70000000000000000000007 /* GolfScoreTests */,
@@ -227,6 +230,15 @@
 				A20000000000000000000012 /* AddStrokeIntent.swift */,
 			);
 			path = LiveActivity;
+			sourceTree = "<group>";
+		};
+		A7000000000000000000000C /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000017 /* Shared.xcconfig */,
+				A20000000000000000000018 /* Local.example.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -452,6 +464,7 @@
 /* Begin XCBuildConfiguration section */
 		AC0000000000000000000001 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A20000000000000000000017 /* Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_MODULES = YES;
@@ -492,6 +505,7 @@
 		};
 		AC0000000000000000000002 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A20000000000000000000017 /* Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_MODULES = YES;

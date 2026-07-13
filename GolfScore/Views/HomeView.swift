@@ -40,7 +40,9 @@ private struct ScorecardPageView: View {
 
                 holeCountToggle
 
-                resetButton
+                if store.totalStrokes > 0 {
+                    resetButton
+                }
             }
             .padding(.horizontal)
             .padding(.top, 44)

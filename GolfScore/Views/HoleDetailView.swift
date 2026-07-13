@@ -32,15 +32,14 @@ struct HoleDetailView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.golfGreen)
-                    .disabled(hole.strokes.count >= RoundStore.maximumStrokesPerHole)
                     .accessibilityLabel("Add Stroke")
                     .accessibilityIdentifier("addStrokeButton")
                     .sensoryFeedback(.impact(weight: .light), trigger: strokeHapticTrigger)
                 }
 
-                Divider()
+                VStack(alignment: .leading, spacing: 0) {
+                    Divider()
 
-                VStack(alignment: .leading, spacing: 8) {
                     if hole.strokes.isEmpty {
                         ContentUnavailableView(
                             "No Strokes Yet",
@@ -52,20 +51,24 @@ struct HoleDetailView: View {
                         LazyVStack(spacing: 0) {
                             ForEach(Array(hole.strokes.enumerated()), id: \.element.id) { index, stroke in
                                 StrokeLogRow(number: index + 1, stroke: stroke)
-                                Divider()
+                                if index < hole.strokes.count - 1 {
+                                    Divider()
+                                }
                             }
                         }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .topLeading)
 
-                Button(role: .destructive) {
-                    isShowingResetConfirmation = true
-                } label: {
-                    Text("Reset")
+                if !hole.strokes.isEmpty {
+                    Button(role: .destructive) {
+                        isShowingResetConfirmation = true
+                    } label: {
+                        Text("Reset")
+                    }
+                    .buttonStyle(RedOutlineButtonStyle())
+                    .accessibilityIdentifier("resetHoleButton")
                 }
-                .buttonStyle(RedOutlineButtonStyle())
-                .accessibilityIdentifier("resetHoleButton")
             }
             .padding(.horizontal)
             .padding(.top, 8)

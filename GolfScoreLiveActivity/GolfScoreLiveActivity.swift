@@ -69,7 +69,6 @@ struct GolfScoreLiveActivity: Widget {
         }
         .buttonStyle(.borderedProminent)
         .tint(golfGreen)
-        .disabled(context.state.strokes >= ScoreRules.maximumStrokesPerHole)
     }
 
     private func strokeSummary(_ count: Int) -> String {

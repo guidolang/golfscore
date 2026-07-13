@@ -23,15 +23,14 @@ final class RoundStoreTests: XCTestCase {
         XCTAssertEqual(persistence.savedRound, store.round)
     }
 
-    func testHoleCannotExceedNineStrokes() {
+    func testHoleAllowsMoreThanNineStrokes() {
         let store = RoundStore(persistence: MemoryPersistence())
 
-        for second in 0..<RoundStore.maximumStrokesPerHole {
+        for second in 0..<12 {
             XCTAssertTrue(store.addStroke(to: 1, at: Date(timeIntervalSince1970: TimeInterval(second))))
         }
 
-        XCTAssertFalse(store.addStroke(to: 1))
-        XCTAssertEqual(store.hole(number: 1).strokes.count, 9)
+        XCTAssertEqual(store.hole(number: 1).strokes.count, 12)
     }
 
     func testTotalCombinesAllHoles() {

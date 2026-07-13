@@ -4,8 +4,6 @@ import Observation
 @MainActor
 @Observable
 final class RoundStore {
-    nonisolated static let maximumStrokesPerHole = ScoreRules.maximumStrokesPerHole
-
     private(set) var round: RoundState
     @ObservationIgnored private let persistence: any RoundPersistence
 
@@ -28,8 +26,7 @@ final class RoundStore {
 
     @discardableResult
     func addStroke(to holeNumber: Int, at timestamp: Date = Date()) -> Bool {
-        guard let index = round.holes.firstIndex(where: { $0.id == holeNumber }),
-              round.holes[index].strokes.count < Self.maximumStrokesPerHole else {
+        guard let index = round.holes.firstIndex(where: { $0.id == holeNumber }) else {
             return false
         }
 

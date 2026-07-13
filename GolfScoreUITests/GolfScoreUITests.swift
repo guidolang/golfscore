@@ -14,17 +14,18 @@ final class GolfScoreUITests: XCTestCase {
         app.launch()
     }
 
-    func testAddStrokeReachesMaximumAndHoleResetCanCancelOrConfirm() {
+    func testAddStrokeBeyondNineAndHoleResetCanCancelOrConfirm() {
         app.buttons["holeButton_1"].tap()
 
         XCTAssertTrue(app.navigationBars["Hole 1"].exists)
+        XCTAssertFalse(app.buttons["resetHoleButton"].exists)
         let addButton = app.buttons["addStrokeButton"]
-        for _ in 0..<9 {
+        for _ in 0..<10 {
             addButton.tap()
         }
 
-        XCTAssertEqual(app.staticTexts["holeStrokeCount"].label, "9 Strokes")
-        XCTAssertFalse(addButton.isEnabled)
+        XCTAssertEqual(app.staticTexts["holeStrokeCount"].label, "10 Strokes")
+        XCTAssertTrue(addButton.isEnabled)
         XCTAssertTrue(app.otherElements["strokeRow_1"].exists || app.staticTexts["Stroke 1"].exists)
 
         let resetHoleButton = app.buttons["resetHoleButton"]
@@ -32,12 +33,13 @@ final class GolfScoreUITests: XCTestCase {
         resetHoleButton.tap()
         XCTAssertTrue(app.alerts.staticTexts["Do you want to reset this hole?"].exists)
         app.alerts.buttons["Cancel"].tap()
-        XCTAssertEqual(app.staticTexts["holeStrokeCount"].label, "9 Strokes")
+        XCTAssertEqual(app.staticTexts["holeStrokeCount"].label, "10 Strokes")
 
         resetHoleButton.tap()
         app.alerts.buttons["Reset"].firstMatch.tap()
         XCTAssertEqual(app.staticTexts["holeStrokeCount"].label, "0 Strokes")
         XCTAssertTrue(addButton.isEnabled)
+        XCTAssertFalse(app.buttons["resetHoleButton"].exists)
     }
 
     func testHomeTogglesBetweenNineAndEighteenHolesWithoutNavigationBar() {
@@ -72,6 +74,8 @@ final class GolfScoreUITests: XCTestCase {
     }
 
     func testResetAllCanCancelOrConfirm() {
+        XCTAssertFalse(app.buttons["resetAllButton"].exists)
+
         app.buttons["holeButton_2"].tap()
         app.buttons["addStrokeButton"].tap()
         app.navigationBars.buttons.element(boundBy: 0).tap()
@@ -88,6 +92,7 @@ final class GolfScoreUITests: XCTestCase {
         resetAllButton.tap()
         app.alerts.buttons["Reset"].firstMatch.tap()
         XCTAssertEqual(totalStrokesElement.label, "0 Total Strokes")
+        XCTAssertFalse(app.buttons["resetAllButton"].exists)
     }
 
     func testScorePersistsAcrossRelaunchWithoutResetArgument() {

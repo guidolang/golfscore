@@ -1,6 +1,6 @@
 # GolfScore
 
-GolfScore is a simple iPhone scorekeeper for a round of golf. Track up to nine strokes per hole, switch between 9-hole and 18-hole views, and add strokes from the Lock Screen while a hole is open. Scores and stroke timestamps stay on the device until they are reset.
+GolfScore is a simple iPhone scorekeeper for a round of golf. Track strokes for each hole, switch between 9-hole and 18-hole views, and add strokes from the Lock Screen while a hole is open. Scores and stroke timestamps stay on the device until they are reset.
 
 <p align="center">
   <img src="docs/golfscore-screenshot.png" alt="GolfScore home screen" width="320">
@@ -39,6 +39,8 @@ Test:
 ```sh
 xcodebuild test -project GolfScore.xcodeproj -scheme GolfScore -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 ```
+
+For local device signing, copy `Config/Local.example.xcconfig` to `Config/Local.xcconfig` and replace `YOUR_TEAM_ID` with your Apple Developer Team ID. The local file is ignored by Git.
 
 ## Privacy
 
