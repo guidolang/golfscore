@@ -11,16 +11,25 @@ struct StrokeTimestampText: View {
 enum StrokeTimestampFormatter {
     static func string(
         for date: Date,
-        relativeTo referenceDate: Date = Date(),
-        calendar: Calendar = .autoupdatingCurrent
+        calendar: Calendar = .autoupdatingCurrent,
+        locale: Locale = .autoupdatingCurrent
     ) -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.locale = locale
         formatter.calendar = calendar
         formatter.timeZone = calendar.timeZone
-        formatter.dateFormat = calendar.isDate(date, inSameDayAs: referenceDate)
-            ? "h:mm a"
-            : "MM/dd/yyyy h:mm a"
+        formatter.dateFormat = uses24HourTime(locale: locale)
+            ? "yyyy-MM-dd HH:mm"
+            : "yyyy-MM-dd hh:mm a"
         return formatter.string(from: date)
+    }
+
+    private static func uses24HourTime(locale: Locale) -> Bool {
+        let hourFormat = DateFormatter.dateFormat(
+            fromTemplate: "j",
+            options: 0,
+            locale: locale
+        ) ?? "h a"
+        return !hourFormat.contains("a")
     }
 }

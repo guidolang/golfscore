@@ -2,9 +2,12 @@ import SwiftUI
 
 struct HoleDetailView: View {
     @Environment(RoundStore.self) private var store
+    @Environment(\.dismiss) private var dismiss
     let holeNumber: Int
 
     @State private var isShowingResetConfirmation = false
+    @State private var isShowingPuttsReminder = false
+    @State private var puttsReminder = PuttsReminder()
     @State private var strokeHapticTrigger = 0
 
     private var hole: HoleScore {
@@ -77,7 +80,18 @@ struct HoleDetailView: View {
         .scrollBounceBehavior(.basedOnSize)
         .navigationTitle("Hole \(holeNumber)")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden()
         .toolbar(.visible, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    handleBackButton()
+                } label: {
+                    Label("Back", systemImage: "chevron.left")
+                }
+                .accessibilityIdentifier("holeBackButton")
+            }
+        }
         .task {
             await HoleLiveActivityController.shared.start(
                 holeNumber: holeNumber,
@@ -105,6 +119,44 @@ struct HoleDetailView: View {
         } message: {
             Text("Do you want to reset this hole?")
         }
+        .alert("Reminder", isPresented: $isShowingPuttsReminder) {
+            Button("Close", role: .cancel) {}
+        } message: {
+            Text("Don't forget to record your putts")
+        }
+    }
+
+    private func handleBackButton() {
+        if puttsReminder.shouldShow(for: hole.strokes) {
+            isShowingPuttsReminder = true
+        } else {
+            dismiss()
+        }
+    }
+}
+
+struct PuttsReminder {
+    private(set) var hasShown = false
+
+    mutating func shouldShow(
+        for strokes: [StrokeRecord],
+        relativeTo currentDate: Date = Date()
+    ) -> Bool {
+        guard !hasShown, strokes.count >= 2 else {
+            return false
+        }
+
+        let previousStroke = strokes[strokes.count - 2]
+        let lastStroke = strokes[strokes.count - 1]
+        let secondsSinceLastStroke = currentDate.timeIntervalSince(lastStroke.timestamp)
+        guard lastStroke.timestamp.timeIntervalSince(previousStroke.timestamp) > 60,
+              secondsSinceLastStroke >= 0,
+              secondsSinceLastStroke < 5 * 60 else {
+            return false
+        }
+
+        hasShown = true
+        return true
     }
 }
 

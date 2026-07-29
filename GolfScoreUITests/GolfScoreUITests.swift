@@ -73,6 +73,22 @@ final class GolfScoreUITests: XCTestCase {
         XCTAssertEqual(app.navigationBars.count, 0)
     }
 
+    func testEighteenHoleViewPersistsAcrossRelaunch() {
+        let toggleButton = app.buttons["holeCountToggleButton"]
+        scrollToElement(toggleButton)
+        toggleButton.tap()
+        XCTAssertTrue(app.buttons["holeButton_10"].exists)
+
+        app.terminate()
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing"]
+        app.launch()
+
+        XCTAssertTrue(app.buttons["holeButton_10"].exists)
+        scrollToElement(app.buttons["holeCountToggleButton"])
+        XCTAssertEqual(app.buttons["holeCountToggleButton"].label, "Show 9 Holes")
+    }
+
     func testResetAllCanCancelOrConfirm() {
         XCTAssertFalse(app.buttons["resetAllButton"].exists)
 
@@ -106,6 +122,37 @@ final class GolfScoreUITests: XCTestCase {
 
         scrollToElement(totalStrokesElement)
         XCTAssertEqual(totalStrokesElement.label, "1 Total Strokes")
+    }
+
+    func testBackButtonLeavesHoleWithoutReminderWhenStrokesAreCloseTogether() {
+        app.buttons["holeButton_4"].tap()
+        app.buttons["addStrokeButton"].tap()
+        app.buttons["addStrokeButton"].tap()
+
+        app.buttons["holeBackButton"].tap()
+
+        XCTAssertEqual(app.navigationBars.count, 0)
+        XCTAssertFalse(app.alerts["Reminder"].exists)
+    }
+
+    func testBackButtonShowsPuttsReminderOnceAndCloseKeepsHoleOpen() {
+        app.terminate()
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing", "-reset-data", "-ui-testing-putts-reminder"]
+        app.launch()
+
+        app.buttons["holeButton_1"].tap()
+        app.buttons["holeBackButton"].tap()
+
+        let reminder = app.alerts["Reminder"]
+        XCTAssertTrue(reminder.waitForExistence(timeout: 2))
+        XCTAssertTrue(reminder.staticTexts["Don't forget to record your putts"].exists)
+        XCTAssertEqual(reminder.buttons.count, 1)
+        reminder.buttons["Close"].tap()
+        XCTAssertTrue(app.navigationBars["Hole 1"].exists)
+
+        app.buttons["holeBackButton"].tap()
+        XCTAssertEqual(app.navigationBars.count, 0)
     }
 
     private func scrollToElement(_ element: XCUIElement, maximumSwipes: Int = 6) {

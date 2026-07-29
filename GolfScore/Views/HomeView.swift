@@ -1,5 +1,9 @@
 import SwiftUI
 
+enum AppPreferenceKeys {
+    static let isShowingAllHoles = "golfscore.isShowingAllHoles"
+}
+
 struct HomeView: View {
     var body: some View {
         NavigationStack {
@@ -12,7 +16,9 @@ struct HomeView: View {
 private struct ScorecardPageView: View {
     @Environment(RoundStore.self) private var store
 
-    @State private var isShowingAllHoles = false
+    @State private var isShowingAllHoles = UserDefaults.standard.bool(
+        forKey: AppPreferenceKeys.isShowingAllHoles
+    )
     @State private var isShowingResetConfirmation = false
 
     private let columns = Array(
@@ -86,6 +92,10 @@ private struct ScorecardPageView: View {
             withTransaction(transaction) {
                 isShowingAllHoles.toggle()
             }
+            UserDefaults.standard.set(
+                isShowingAllHoles,
+                forKey: AppPreferenceKeys.isShowingAllHoles
+            )
         } label: {
             Text(isShowingAllHoles ? "Show 9 Holes" : "Show 18 Holes")
                 .contentTransition(.identity)

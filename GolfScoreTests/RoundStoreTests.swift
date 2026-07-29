@@ -106,37 +106,102 @@ final class RoundStoreTests: XCTestCase {
         XCTAssertNil(persistence.load())
     }
 
-    func testTimestampFormatterShowsTimeOnlyForToday() throws {
+    func testTimestampFormatterUsesTwelveHourSystemSetting() throws {
         let calendar = testCalendar
-        let reference = try date(year: 2026, month: 7, day: 13, hour: 16, minute: 30)
         let stroke = try date(year: 2026, month: 7, day: 13, hour: 9, minute: 5)
 
         XCTAssertEqual(
-            StrokeTimestampFormatter.string(for: stroke, relativeTo: reference, calendar: calendar),
-            "9:05 AM"
+            StrokeTimestampFormatter.string(
+                for: stroke,
+                calendar: calendar,
+                locale: Locale(identifier: "en_US")
+            ),
+            "2026-07-13 09:05 AM"
         )
     }
 
-    func testTimestampFormatterIncludesDateForPreviousDay() throws {
+    func testTimestampFormatterUsesTwentyFourHourSystemSetting() throws {
         let calendar = testCalendar
-        let reference = try date(year: 2026, month: 7, day: 13, hour: 16, minute: 30)
         let stroke = try date(year: 2026, month: 7, day: 4, hour: 21, minute: 7)
 
         XCTAssertEqual(
-            StrokeTimestampFormatter.string(for: stroke, relativeTo: reference, calendar: calendar),
-            "07/04/2026 9:07 PM"
+            StrokeTimestampFormatter.string(
+                for: stroke,
+                calendar: calendar,
+                locale: Locale(identifier: "en_GB")
+            ),
+            "2026-07-04 21:07"
         )
     }
 
-    func testTimestampFormatterChangesFormatAcrossMidnight() throws {
-        let calendar = testCalendar
-        let reference = try date(year: 2026, month: 7, day: 14, hour: 0, minute: 1)
-        let stroke = try date(year: 2026, month: 7, day: 13, hour: 23, minute: 59)
+    func testPuttsReminderRequiresAtLeastTwoStrokes() {
+        var reminder = PuttsReminder()
 
-        XCTAssertEqual(
-            StrokeTimestampFormatter.string(for: stroke, relativeTo: reference, calendar: calendar),
-            "07/13/2026 11:59 PM"
-        )
+        XCTAssertFalse(reminder.shouldShow(for: []))
+        XCTAssertFalse(reminder.shouldShow(for: [
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 0))
+        ]))
+    }
+
+    func testPuttsReminderDoesNotShowAtExactlySixtySeconds() {
+        var reminder = PuttsReminder()
+
+        XCTAssertFalse(reminder.shouldShow(for: [
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 0)),
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 60))
+        ], relativeTo: Date(timeIntervalSince1970: 60)))
+    }
+
+    func testPuttsReminderShowsOnlyOnceWhenLastTwoStrokesAreMoreThanSixtySecondsApart() {
+        var reminder = PuttsReminder()
+        let strokes = [
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 0)),
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 10)),
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 71))
+        ]
+        let currentDate = Date(timeIntervalSince1970: 71)
+
+        XCTAssertTrue(reminder.shouldShow(for: strokes, relativeTo: currentDate))
+        XCTAssertFalse(reminder.shouldShow(for: strokes, relativeTo: currentDate))
+    }
+
+    func testPuttsReminderShowsWhenLastStrokeIsJustUnderFiveMinutesOld() {
+        var reminder = PuttsReminder()
+        let strokes = [
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 0)),
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 61))
+        ]
+
+        XCTAssertTrue(reminder.shouldShow(
+            for: strokes,
+            relativeTo: Date(timeIntervalSince1970: 360.999)
+        ))
+    }
+
+    func testPuttsReminderDoesNotShowWhenLastStrokeIsExactlyFiveMinutesOld() {
+        var reminder = PuttsReminder()
+        let strokes = [
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 0)),
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 61))
+        ]
+
+        XCTAssertFalse(reminder.shouldShow(
+            for: strokes,
+            relativeTo: Date(timeIntervalSince1970: 361)
+        ))
+    }
+
+    func testPuttsReminderDoesNotShowWhenLastStrokeIsMoreThanFiveMinutesOld() {
+        var reminder = PuttsReminder()
+        let strokes = [
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 0)),
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 61))
+        ]
+
+        XCTAssertFalse(reminder.shouldShow(
+            for: strokes,
+            relativeTo: Date(timeIntervalSince1970: 362)
+        ))
     }
 
     private var testCalendar: Calendar {
