@@ -2,11 +2,13 @@ import SwiftUI
 
 struct HoleDetailView: View {
     @Environment(RoundStore.self) private var store
-    @Environment(\.dismiss) private var dismiss
     let holeNumber: Int
+    let onNavigate: (Int) -> Void
+    let onShowScorecard: () -> Void
 
-    @State private var isShowingResetConfirmation = false
+    @State private var strokePendingDeletion: StrokeDeletionRequest?
     @State private var isShowingPuttsReminder = false
+    @State private var isShowingSkippedHoleReminder = false
     @State private var puttsReminder = PuttsReminder()
     @State private var strokeHapticTrigger = 0
 
@@ -15,81 +17,108 @@ struct HoleDetailView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                VStack(spacing: 16) {
-                    Text(RoundStore.strokeSummary(for: hole.strokes.count))
-                        .font(.system(.largeTitle, design: .rounded, weight: .bold))
-                        .contentTransition(.numericText())
-                        .accessibilityIdentifier("holeStrokeCount")
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(spacing: 20) {
+                    VStack(spacing: 16) {
+                        Text(RoundStore.strokeSummary(for: hole.strokes.count))
+                            .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                            .contentTransition(.numericText())
+                            .accessibilityIdentifier("holeStrokeCount")
 
-                    Button {
-                        if store.addStroke(to: holeNumber) {
-                            strokeHapticTrigger += 1
+                        Button {
+                            let isFirstStroke = hole.strokes.isEmpty
+                            if store.addStroke(to: holeNumber) {
+                                strokeHapticTrigger += 1
+                                if isFirstStroke,
+                                   holeNumber > 1,
+                                   store.hole(number: holeNumber - 1).strokes.isEmpty {
+                                    isShowingSkippedHoleReminder = true
+                                }
+                            }
+                        } label: {
+                            Label("Stroke", systemImage: "plus")
+                                .font(.title3.bold())
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 12)
                         }
-                    } label: {
-                        Label("Stroke", systemImage: "plus")
-                            .font(.title3.bold())
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
+                        .buttonStyle(.borderedProminent)
+                        .tint(.golfGreen)
+                        .accessibilityLabel("Add Stroke")
+                        .accessibilityIdentifier("addStrokeButton")
+                        .sensoryFeedback(.impact(weight: .light), trigger: strokeHapticTrigger)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.golfGreen)
-                    .accessibilityLabel("Add Stroke")
-                    .accessibilityIdentifier("addStrokeButton")
-                    .sensoryFeedback(.impact(weight: .light), trigger: strokeHapticTrigger)
-                }
 
-                VStack(alignment: .leading, spacing: 0) {
-                    Divider()
+                    VStack(alignment: .leading, spacing: 0) {
+                        Divider()
 
-                    if hole.strokes.isEmpty {
-                        ContentUnavailableView(
-                            "No Strokes Yet",
-                            systemImage: "figure.golf",
-                            description: Text("Tap + Stroke to begin this hole.")
-                        )
-                        .frame(maxWidth: .infinity, minHeight: 240)
-                    } else {
-                        LazyVStack(spacing: 0) {
-                            ForEach(Array(hole.strokes.enumerated()), id: \.element.id) { index, stroke in
-                                StrokeLogRow(number: index + 1, stroke: stroke)
-                                if index < hole.strokes.count - 1 {
-                                    Divider()
+                        if hole.strokes.isEmpty {
+                            ContentUnavailableView(
+                                "No Strokes Yet",
+                                systemImage: "figure.golf",
+                                description: Text("Tap + Stroke to record a stroke for this hole.")
+                            )
+                            .frame(maxWidth: .infinity, minHeight: 240)
+                        } else {
+                            LazyVStack(spacing: 0) {
+                                ForEach(Array(hole.strokes.enumerated()), id: \.element.id) { index, stroke in
+                                    StrokeLogRow(number: index + 1, stroke: stroke) {
+                                        strokePendingDeletion = StrokeDeletionRequest(
+                                            id: stroke.id,
+                                            number: index + 1
+                                        )
+                                    }
+                                    if index < hole.strokes.count - 1 {
+                                        Divider()
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                .frame(maxWidth: .infinity, alignment: .topLeading)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
 
-                if !hole.strokes.isEmpty {
-                    Button(role: .destructive) {
-                        isShowingResetConfirmation = true
+                    Spacer(minLength: 20)
+
+                    Button {
+                        onShowScorecard()
                     } label: {
-                        Text("Reset")
+                        Text("Show Scorecard")
                     }
-                    .buttonStyle(RedOutlineButtonStyle())
-                    .accessibilityIdentifier("resetHoleButton")
+                    .buttonStyle(GreenOutlineButtonStyle())
+                    .accessibilityIdentifier("showScorecardButton")
                 }
+                .padding(.horizontal)
+                .padding(.top, 8)
+                .padding(.bottom, 24)
+                .frame(minHeight: geometry.size.height, alignment: .top)
             }
-            .padding(.horizontal)
-            .padding(.top, 8)
-            .padding(.bottom, 24)
+            .scrollBounceBehavior(.basedOnSize)
         }
-        .scrollBounceBehavior(.basedOnSize)
         .navigationTitle("Hole \(holeNumber)")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .toolbar(.visible, for: .navigationBar)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    handleBackButton()
-                } label: {
-                    Label("Back", systemImage: "chevron.left")
+            if holeNumber > 1 {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        handleNavigation(to: holeNumber - 1)
+                    } label: {
+                        Label("Previous", systemImage: "chevron.left")
+                    }
+                    .accessibilityIdentifier("holeBackButton")
                 }
-                .accessibilityIdentifier("holeBackButton")
+            }
+
+            if holeNumber < RoundState.holeNumbers.count {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        handleNavigation(to: holeNumber + 1)
+                    } label: {
+                        Label("Next", systemImage: "chevron.right")
+                    }
+                    .accessibilityIdentifier("holeNextButton")
+                }
             }
         }
         .task {
@@ -111,13 +140,20 @@ struct HoleDetailView: View {
                 await HoleLiveActivityController.shared.end(holeNumber: holeNumber)
             }
         }
-        .alert("Reset Hole \(holeNumber)?", isPresented: $isShowingResetConfirmation) {
-            Button("Cancel", role: .cancel) {}
-            Button("Reset", role: .destructive) {
-                store.resetHole(holeNumber)
-            }
+        .alert(item: $strokePendingDeletion) { request in
+            Alert(
+                title: Text("Delete Stroke \(request.number)?"),
+                message: Text("Do you want to delete this stroke?"),
+                primaryButton: .cancel(),
+                secondaryButton: .destructive(Text("Delete")) {
+                    store.deleteStroke(from: holeNumber, id: request.id)
+                }
+            )
+        }
+        .alert("Skipped Hole", isPresented: $isShowingSkippedHoleReminder) {
+            Button("Close", role: .cancel) {}
         } message: {
-            Text("Do you want to reset this hole?")
+            Text("You didn't record any strokes for the previous hole.")
         }
         .alert("Reminder", isPresented: $isShowingPuttsReminder) {
             Button("Close", role: .cancel) {}
@@ -126,13 +162,18 @@ struct HoleDetailView: View {
         }
     }
 
-    private func handleBackButton() {
+    private func handleNavigation(to holeNumber: Int) {
         if puttsReminder.shouldShow(for: hole.strokes) {
             isShowingPuttsReminder = true
         } else {
-            dismiss()
+            onNavigate(holeNumber)
         }
     }
+}
+
+private struct StrokeDeletionRequest: Identifiable {
+    let id: UUID
+    let number: Int
 }
 
 struct PuttsReminder {
@@ -163,6 +204,7 @@ struct PuttsReminder {
 private struct StrokeLogRow: View {
     let number: Int
     let stroke: StrokeRecord
+    let onDelete: () -> Void
 
     var body: some View {
         HStack(alignment: .firstTextBaseline) {
@@ -173,10 +215,14 @@ private struct StrokeLogRow: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.trailing)
+
+            Button(role: .destructive, action: onDelete) {
+                Image(systemName: "trash")
+            }
+            .accessibilityLabel("Delete Stroke \(number)")
+            .accessibilityIdentifier("deleteStrokeButton_\(number)")
         }
         .padding(.horizontal)
         .padding(.vertical, 14)
-        .accessibilityElement(children: .combine)
-        .accessibilityIdentifier("strokeRow_\(number)")
     }
 }

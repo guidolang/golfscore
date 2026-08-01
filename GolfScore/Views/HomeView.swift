@@ -1,117 +1,199 @@
 import SwiftUI
 
 enum AppPreferenceKeys {
-    static let isShowingAllHoles = "golfscore.isShowingAllHoles"
+    static let selectedHoleNumber = "golfscore.selectedHoleNumber"
 }
 
 struct HomeView: View {
+    @AppStorage(AppPreferenceKeys.selectedHoleNumber) private var selectedHoleNumber = 1
+    @State private var navigationPath: [Int]
+    @State private var isShowingScorecard = false
+
+    private var currentHoleNumber: Int {
+        navigationPath.last ?? 1
+    }
+
+    init() {
+        let savedHoleNumber = UserDefaults.standard.integer(
+            forKey: AppPreferenceKeys.selectedHoleNumber
+        )
+        let initialHoleNumber = RoundState.holeNumbers.contains(savedHoleNumber)
+            ? savedHoleNumber
+            : 1
+        _navigationPath = State(initialValue: Self.path(to: initialHoleNumber))
+    }
+
     var body: some View {
-        NavigationStack {
-            ScorecardPageView()
-                .toolbar(.hidden, for: .navigationBar)
+        NavigationStack(path: $navigationPath) {
+            holeDetail(for: 1)
+                .navigationDestination(for: Int.self) { holeNumber in
+                    holeDetail(for: holeNumber)
+                }
         }
+        .sheet(isPresented: $isShowingScorecard) {
+            ScorecardView { holeNumber in
+                navigate(to: holeNumber)
+                isShowingScorecard = false
+            } onReset: {
+                navigate(to: 1)
+                isShowingScorecard = false
+            }
+            .presentationDetents([.large])
+        }
+        .onAppear {
+            if selectedHoleNumber != currentHoleNumber {
+                selectedHoleNumber = currentHoleNumber
+            }
+        }
+        .onChange(of: navigationPath) { _, path in
+            selectedHoleNumber = path.last ?? 1
+        }
+    }
+
+    private func navigate(to holeNumber: Int) {
+        guard RoundState.holeNumbers.contains(holeNumber) else {
+            return
+        }
+
+        if holeNumber == currentHoleNumber + 1 {
+            navigationPath.append(holeNumber)
+        } else if holeNumber == currentHoleNumber - 1, !navigationPath.isEmpty {
+            navigationPath.removeLast()
+        } else {
+            navigationPath = Self.path(to: holeNumber)
+        }
+    }
+
+    private func holeDetail(for holeNumber: Int) -> some View {
+        HoleDetailView(
+            holeNumber: holeNumber,
+            onNavigate: navigate,
+            onShowScorecard: {
+                isShowingScorecard = true
+            }
+        )
+    }
+
+    private static func path(to holeNumber: Int) -> [Int] {
+        holeNumber > 1 ? Array(2...holeNumber) : []
     }
 }
 
-private struct ScorecardPageView: View {
+private struct ScorecardView: View {
     @Environment(RoundStore.self) private var store
+    @Environment(\.dismiss) private var dismiss
 
-    @State private var isShowingAllHoles = UserDefaults.standard.bool(
-        forKey: AppPreferenceKeys.isShowingAllHoles
-    )
     @State private var isShowingResetConfirmation = false
+    let onSelectHole: (Int) -> Void
+    let onReset: () -> Void
 
-    private let columns = Array(
-        repeating: GridItem(.flexible(), spacing: 16),
-        count: 3
-    )
+    private var frontNine: [HoleScore] {
+        Array(store.round.holes.prefix(9))
+    }
+
+    private var backNine: [HoleScore] {
+        Array(store.round.holes.dropFirst(9))
+    }
+
+    private var scorecardRowInsets: EdgeInsets {
+        EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 32)
+    }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(visibleHoles) { hole in
-                        NavigationLink {
-                            HoleDetailView(holeNumber: hole.id)
-                        } label: {
-                            HoleButton(hole: hole)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier("holeButton_\(hole.id)")
-                        .accessibilityLabel("Hole \(hole.id), \(RoundStore.strokeSummary(for: hole.strokes.count))")
+        NavigationStack {
+            List {
+                scoreSection(
+                    title: "Front 9",
+                    holes: frontNine,
+                    totalTitle: "Total Front 9"
+                )
+
+                scoreSection(
+                    title: "Back 9",
+                    holes: backNine,
+                    totalTitle: "Total Back 9"
+                )
+
+                Section {
+                    totalRow(title: "Grand Total", total: store.totalStrokes)
+                        .listRowInsets(scorecardRowInsets)
+                        .accessibilityIdentifier("grandTotalRow")
+                }
+
+                Section {
+                    Button(role: .destructive) {
+                        isShowingResetConfirmation = true
+                    } label: {
+                        Text("Reset")
                     }
-                }
-
-                totalHeader
-
-                holeCountToggle
-
-                if store.totalStrokes > 0 {
-                    resetButton
+                    .accessibilityIdentifier("resetAllButton")
                 }
             }
-            .padding(.horizontal)
-            .padding(.top, 44)
-            .padding(.bottom, 24)
-        }
-        .scrollBounceBehavior(.basedOnSize)
-        .alert("Reset All Holes?", isPresented: $isShowingResetConfirmation) {
-            Button("Cancel", role: .cancel) {}
-            Button("Reset", role: .destructive) {
-                store.resetAll()
+            .navigationTitle("Scorecard")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Label("Close", systemImage: "xmark")
+                    }
+                    .accessibilityIdentifier("closeScorecardButton")
+                }
             }
-        } message: {
-            Text("Do you want to reset all holes?")
-        }
-    }
-
-    private var visibleHoles: [HoleScore] {
-        Array(store.round.holes.prefix(isShowingAllHoles ? 18 : 9))
-    }
-
-    private var totalHeader: some View {
-        VStack(spacing: 0) {
-            Text("\(store.totalStrokes)")
-                .font(.system(.largeTitle, design: .rounded, weight: .bold))
-                .foregroundStyle(Color.primary)
-                .contentTransition(.numericText())
-
-            Text("Total Strokes")
-                .font(.headline)
-                .foregroundStyle(.secondary)
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(store.totalStrokes) Total Strokes")
-        .accessibilityIdentifier("totalStrokesCount")
-    }
-
-    private var holeCountToggle: some View {
-        Button {
-            var transaction = Transaction(animation: nil)
-            transaction.disablesAnimations = true
-            withTransaction(transaction) {
-                isShowingAllHoles.toggle()
+            .alert("Reset All Holes?", isPresented: $isShowingResetConfirmation) {
+                Button("Cancel", role: .cancel) {}
+                Button("Reset", role: .destructive) {
+                    store.resetAll()
+                    onReset()
+                }
+            } message: {
+                Text("Do you want to reset all holes?")
             }
-            UserDefaults.standard.set(
-                isShowingAllHoles,
-                forKey: AppPreferenceKeys.isShowingAllHoles
+        }
+    }
+
+    private func scoreSection(
+        title: String,
+        holes: [HoleScore],
+        totalTitle: String
+    ) -> some View {
+        Section(title) {
+            ForEach(holes) { hole in
+                HStack {
+                    Button("Hole \(hole.id)") {
+                        onSelectHole(hole.id)
+                    }
+                    .buttonStyle(.borderless)
+                    .foregroundStyle(.blue)
+                    .accessibilityIdentifier("scorecardHole_\(hole.id)")
+
+                    Spacer()
+
+                    Text("\(hole.strokes.count)")
+                        .foregroundStyle(hole.strokes.isEmpty ? Color.secondary : Color.primary)
+                        .accessibilityIdentifier("scorecardHoleCount_\(hole.id)")
+                }
+                .listRowInsets(scorecardRowInsets)
+            }
+
+            totalRow(
+                title: totalTitle,
+                total: holes.reduce(0) { $0 + $1.strokes.count }
             )
-        } label: {
-            Text(isShowingAllHoles ? "Show 9 Holes" : "Show 18 Holes")
-                .contentTransition(.identity)
+            .listRowInsets(scorecardRowInsets)
+            .accessibilityIdentifier(totalTitle == "Total Front 9" ? "frontNineTotalRow" : "backNineTotalRow")
         }
-        .buttonStyle(GreenOutlineButtonStyle())
-        .accessibilityIdentifier("holeCountToggleButton")
     }
 
-    private var resetButton: some View {
-        Button(role: .destructive) {
-            isShowingResetConfirmation = true
-        } label: {
-            Text("Reset")
+    private func totalRow(title: String, total: Int) -> some View {
+        HStack {
+            Text(title)
+            Spacer()
+            Text("\(total)")
         }
-        .buttonStyle(RedOutlineButtonStyle())
-        .accessibilityIdentifier("resetAllButton")
+        .fontWeight(.semibold)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -130,51 +212,6 @@ struct GreenOutlineButtonStyle: ButtonStyle {
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .opacity(configuration.isPressed ? 0.65 : 1)
             .contentShape(RoundedRectangle(cornerRadius: 12))
-    }
-}
-
-struct RedOutlineButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.headline)
-            .foregroundStyle(Color.red)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
-            .background(Color.white)
-            .overlay {
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.red, lineWidth: 1.5)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .opacity(configuration.isPressed ? 0.65 : 1)
-            .contentShape(RoundedRectangle(cornerRadius: 12))
-    }
-}
-
-private struct HoleButton: View {
-    let hole: HoleScore
-
-    private var hasStrokes: Bool {
-        !hole.strokes.isEmpty
-    }
-
-    var body: some View {
-        ZStack {
-            Circle()
-                .fill(hasStrokes ? Color.golfGreen : Color.white)
-            Circle()
-                .stroke(Color.golfGreen, lineWidth: 3)
-
-            VStack(spacing: 0) {
-                Text("\(hole.id)")
-                    .font(.system(.title, design: .rounded, weight: .bold))
-                Text("(\(hole.strokes.count))")
-                    .font(.subheadline.weight(.semibold))
-            }
-            .foregroundStyle(hasStrokes ? Color.white : Color.golfGreen)
-        }
-        .aspectRatio(1, contentMode: .fit)
-        .contentShape(Circle())
     }
 }
 

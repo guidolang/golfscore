@@ -5,6 +5,8 @@ import Foundation
 final class HoleLiveActivityController {
     static let shared = HoleLiveActivityController()
 
+    private var startGeneration = 0
+
     private init() {}
 
     func start(holeNumber: Int, strokes: Int) async {
@@ -12,7 +14,12 @@ final class HoleLiveActivityController {
             return
         }
 
-        await endAll()
+        startGeneration += 1
+        let generation = startGeneration
+        await endAllActivities()
+        guard generation == startGeneration else {
+            return
+        }
 
         let attributes = HoleActivityAttributes(holeNumber: holeNumber)
         let content = ActivityContent(
@@ -41,7 +48,12 @@ final class HoleLiveActivityController {
         }
     }
 
-    private func endAll() async {
+    func endAll() async {
+        startGeneration += 1
+        await endAllActivities()
+    }
+
+    private func endAllActivities() async {
         for activity in Activity<HoleActivityAttributes>.activities {
             await activity.end(nil, dismissalPolicy: .immediate)
         }

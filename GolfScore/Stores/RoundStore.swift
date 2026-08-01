@@ -35,12 +35,16 @@ final class RoundStore {
         return true
     }
 
-    func resetHole(_ holeNumber: Int) {
-        guard let index = round.holes.firstIndex(where: { $0.id == holeNumber }) else {
-            return
+    @discardableResult
+    func deleteStroke(from holeNumber: Int, id strokeID: UUID) -> Bool {
+        guard let holeIndex = round.holes.firstIndex(where: { $0.id == holeNumber }),
+              let strokeIndex = round.holes[holeIndex].strokes.firstIndex(where: { $0.id == strokeID }) else {
+            return false
         }
-        round.holes[index].strokes.removeAll()
+
+        round.holes[holeIndex].strokes.remove(at: strokeIndex)
         persist()
+        return true
     }
 
     func resetAll() {

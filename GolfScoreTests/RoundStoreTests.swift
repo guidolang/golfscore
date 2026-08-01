@@ -49,16 +49,36 @@ final class RoundStoreTests: XCTestCase {
         XCTAssertEqual(RoundStore.strokeSummary(for: 2), "2 Strokes")
     }
 
-    func testResetHoleLeavesOtherHolesUntouched() {
-        let store = RoundStore(persistence: MemoryPersistence())
-        store.addStroke(to: 1)
+    func testDeletingStrokePersistsAndLeavesOtherStrokesInOrder() {
+        let persistence = MemoryPersistence()
+        let store = RoundStore(persistence: persistence)
+        let first = Date(timeIntervalSince1970: 1)
+        let second = Date(timeIntervalSince1970: 2)
+        let third = Date(timeIntervalSince1970: 3)
+        store.addStroke(to: 1, at: first)
+        store.addStroke(to: 1, at: second)
+        store.addStroke(to: 1, at: third)
         store.addStroke(to: 2)
+        let strokeID = store.hole(number: 1).strokes[1].id
 
-        store.resetHole(1)
+        XCTAssertTrue(store.deleteStroke(from: 1, id: strokeID))
 
-        XCTAssertTrue(store.hole(number: 1).strokes.isEmpty)
+        XCTAssertEqual(store.hole(number: 1).strokes.map(\.timestamp), [first, third])
         XCTAssertEqual(store.hole(number: 2).strokes.count, 1)
-        XCTAssertEqual(store.totalStrokes, 1)
+        XCTAssertEqual(store.totalStrokes, 3)
+        XCTAssertEqual(persistence.savedRound, store.round)
+    }
+
+    func testDeletingUnknownStrokeDoesNotChangeRound() {
+        let persistence = MemoryPersistence()
+        let store = RoundStore(persistence: persistence)
+        store.addStroke(to: 1)
+        let originalRound = store.round
+
+        XCTAssertFalse(store.deleteStroke(from: 1, id: UUID()))
+
+        XCTAssertEqual(store.round, originalRound)
+        XCTAssertEqual(persistence.savedRound, originalRound)
     }
 
     func testResetAllClearsEveryHole() {
