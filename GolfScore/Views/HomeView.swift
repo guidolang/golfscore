@@ -127,7 +127,7 @@ private struct ScorecardView: View {
                         item: ScorecardCSVDocument(round: store.round),
                         preview: SharePreview("Scorecard CSV", image: Image(systemName: "tablecells"))
                     ) {
-                        Text("Share")
+                        Text("Export")
                     }
                     .accessibilityIdentifier("shareScorecardButton")
 

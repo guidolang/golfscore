@@ -6,7 +6,10 @@ struct GolfScoreApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @State private var store: RoundStore
     @State private var isDeviceLocking = false
+    @State private var backgroundedAt: TimeInterval?
+    @State private var unlockTransitionAt: TimeInterval?
     @State private var backgroundCleanupTask: Task<Void, Never>?
+    @State private var foregroundConfirmationTask: Task<Void, Never>?
 
     init() {
         let arguments = ProcessInfo.processInfo.arguments
@@ -43,11 +46,34 @@ struct GolfScoreApp: App {
         WindowGroup {
             HomeView()
                 .environment(store)
-                .onChange(of: scenePhase) { _, newPhase in
+                .onChange(of: scenePhase, initial: true) { _, newPhase in
                     if newPhase == .active {
+                        if isDeviceLocking {
+                            scheduleForegroundConfirmation()
+                            return
+                        }
+
                         isDeviceLocking = false
+                        backgroundedAt = nil
+                        unlockTransitionAt = nil
                         cancelBackgroundCleanup()
                         store.reload()
+                    } else if newPhase == .inactive,
+                              isDeviceLocking,
+                              UIApplication.shared.isProtectedDataAvailable,
+                              unlockTransitionAt == nil {
+                        unlockTransitionAt = ProcessInfo.processInfo.systemUptime
+                    } else if newPhase == .background {
+                        foregroundConfirmationTask?.cancel()
+                        foregroundConfirmationTask = nil
+
+                        let now = ProcessInfo.processInfo.systemUptime
+                        if isDeviceLocking,
+                           let unlockTransitionAt,
+                           now - unlockTransitionAt >= 0.1 {
+                            isDeviceLocking = false
+                        }
+                        backgroundedAt = now
                     }
                     updateLiveActivity(for: newPhase)
                 }
@@ -56,7 +82,23 @@ struct GolfScoreApp: App {
                         for: UIApplication.protectedDataWillBecomeUnavailableNotification
                     )
                 ) { _ in
+                    let now = ProcessInfo.processInfo.systemUptime
+                    let timeSinceBackground = backgroundedAt.map { now - $0 }
+
+                    // Preserve the activity only when locking is what moves
+                    // GolfScore out of the foreground. On a physical device,
+                    // the lock notification can immediately follow the
+                    // background transition, so use a short classification
+                    // window. A later lock means the user already left the app.
+                    let isLockTransition = scenePhase != .background
+                        || (timeSinceBackground ?? .infinity) <= 0.25
+                    guard isLockTransition else {
+                        return
+                    }
                     isDeviceLocking = true
+                    unlockTransitionAt = nil
+                    foregroundConfirmationTask?.cancel()
+                    foregroundConfirmationTask = nil
                     cancelBackgroundCleanup()
                 }
         }
@@ -69,10 +111,7 @@ struct GolfScoreApp: App {
         }
 
         if scenePhase == .background {
-            // Locking and switching apps both transition through background.
-            // Give the protected-data notification time to identify a lock
-            // before ending the activity for a genuine app-background event.
-            scheduleBackgroundCleanup(after: .seconds(1))
+            scheduleBackgroundCleanup(after: .milliseconds(250))
             return
         }
 
@@ -115,6 +154,29 @@ struct GolfScoreApp: App {
     private func cancelBackgroundCleanup() {
         backgroundCleanupTask?.cancel()
         backgroundCleanupTask = nil
+    }
+
+    private func scheduleForegroundConfirmation() {
+        foregroundConfirmationTask?.cancel()
+        foregroundConfirmationTask = Task { @MainActor in
+            do {
+                try await Task.sleep(for: .milliseconds(100))
+            } catch {
+                return
+            }
+
+            guard scenePhase == .active,
+                  UIApplication.shared.applicationState == .active else {
+                return
+            }
+
+            isDeviceLocking = false
+            backgroundedAt = nil
+            unlockTransitionAt = nil
+            cancelBackgroundCleanup()
+            store.reload()
+            startLiveActivity()
+        }
     }
 
     private func startLiveActivity() {
