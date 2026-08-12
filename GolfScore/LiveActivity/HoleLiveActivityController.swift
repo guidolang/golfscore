@@ -1,5 +1,6 @@
 import ActivityKit
 import Foundation
+import UIKit
 
 @MainActor
 final class HoleLiveActivityController {
@@ -10,23 +11,39 @@ final class HoleLiveActivityController {
     private init() {}
 
     func start(holeNumber: Int, strokes: Int) async {
-        guard ActivityAuthorizationInfo().areActivitiesEnabled else {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled,
+              UIApplication.shared.applicationState == .active else {
             return
         }
 
         startGeneration += 1
         let generation = startGeneration
-        await endAllActivities()
-        guard generation == startGeneration else {
+
+        let activities = Activity<HoleActivityAttributes>.activities
+        let matchingActivity = activities.first {
+            $0.attributes.holeNumber == holeNumber
+        }
+
+        for activity in activities where activity.id != matchingActivity?.id {
+            await activity.end(nil, dismissalPolicy: .immediate)
+        }
+
+        guard generation == startGeneration,
+              UIApplication.shared.applicationState == .active else {
             return
         }
 
-        let attributes = HoleActivityAttributes(holeNumber: holeNumber)
         let content = ActivityContent(
             state: HoleActivityAttributes.ContentState(strokes: strokes),
             staleDate: nil
         )
-        _ = try? Activity.request(attributes: attributes, content: content)
+
+        if let matchingActivity {
+            await matchingActivity.update(content)
+        } else {
+            let attributes = HoleActivityAttributes(holeNumber: holeNumber)
+            _ = try? Activity.request(attributes: attributes, content: content)
+        }
     }
 
     func update(holeNumber: Int, strokes: Int) async {

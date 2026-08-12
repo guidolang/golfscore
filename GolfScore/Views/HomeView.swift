@@ -1,4 +1,6 @@
 import SwiftUI
+import CoreTransferable
+import UniformTypeIdentifiers
 
 enum AppPreferenceKeys {
     static let selectedHoleNumber = "golfscore.selectedHoleNumber"
@@ -121,6 +123,14 @@ private struct ScorecardView: View {
                 }
 
                 Section {
+                    ShareLink(
+                        item: ScorecardCSVDocument(round: store.round),
+                        preview: SharePreview("Scorecard CSV", image: Image(systemName: "tablecells"))
+                    ) {
+                        Text("Share")
+                    }
+                    .accessibilityIdentifier("shareScorecardButton")
+
                     Button(role: .destructive) {
                         isShowingResetConfirmation = true
                     } label: {
@@ -194,6 +204,35 @@ private struct ScorecardView: View {
         }
         .fontWeight(.semibold)
         .accessibilityElement(children: .combine)
+    }
+}
+
+struct ScorecardCSVDocument: Transferable {
+    let contents: Data
+    let filename: String
+
+    init(
+        round: RoundState,
+        date: Date = Date(),
+        timeZone: TimeZone = .autoupdatingCurrent
+    ) {
+        contents = Data(RoundStore.scorecardCSV(for: round, timeZone: timeZone).utf8)
+
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.timeZone = timeZone
+        formatter.dateFormat = "yyyy-MM-dd"
+        filename = "GolfScore-\(formatter.string(from: date)).csv"
+    }
+
+    static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(exportedContentType: .commaSeparatedText) { document in
+            let fileURL = FileManager.default.temporaryDirectory
+                .appendingPathComponent(document.filename)
+            try document.contents.write(to: fileURL, options: .atomic)
+            return SentTransferredFile(fileURL)
+        }
     }
 }
 

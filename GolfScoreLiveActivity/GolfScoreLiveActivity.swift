@@ -26,9 +26,6 @@ struct GolfScoreLiveActivity: Widget {
                 addStrokeButton(context: context)
             }
             .padding()
-            .foregroundStyle(Color.black)
-            .activityBackgroundTint(Color.white)
-            .activitySystemActionForegroundColor(Color.black)
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {

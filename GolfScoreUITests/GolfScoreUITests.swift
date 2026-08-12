@@ -53,22 +53,28 @@ final class GolfScoreUITests: XCTestCase {
         XCTAssertTrue(app.navigationBars["Hole 18"].exists)
     }
 
-    func testFirstStrokeAfterSkippedHoleShowsReminderOnlyWhenPreviousHoleIsEmpty() {
-        app.buttons["holeNextButton"].tap()
-        app.buttons["addStrokeButton"].tap()
+    func testSkippedHoleWarningReflectsWhetherPreviousHoleHasStrokes() {
+        let skippedHoleWarning = app.staticTexts["skippedHoleWarning"]
 
-        let skippedHoleAlert = app.alerts["Skipped Hole"]
-        XCTAssertTrue(skippedHoleAlert.waitForExistence(timeout: 2))
-        XCTAssertTrue(skippedHoleAlert.staticTexts["You didn't record any strokes for the previous hole."].exists)
+        XCTAssertFalse(skippedHoleWarning.exists)
+
+        app.buttons["holeNextButton"].tap()
+        XCTAssertTrue(skippedHoleWarning.exists)
+        XCTAssertEqual(skippedHoleWarning.label, "No strokes recorded for the previous hole")
+        XCTAssertFalse(app.alerts["Skipped Hole"].exists)
+
+        app.buttons["addStrokeButton"].tap()
+        XCTAssertTrue(skippedHoleWarning.exists)
         XCTAssertEqual(app.staticTexts["holeStrokeCount"].label, "1 Stroke")
-        skippedHoleAlert.buttons["Close"].tap()
+        XCTAssertFalse(app.alerts["Skipped Hole"].exists)
 
+        app.buttons["holeBackButton"].tap()
         app.buttons["addStrokeButton"].tap()
-        XCTAssertFalse(skippedHoleAlert.exists)
+        XCTAssertFalse(skippedHoleWarning.exists)
 
         app.buttons["holeNextButton"].tap()
-        app.buttons["addStrokeButton"].tap()
-        XCTAssertFalse(skippedHoleAlert.exists)
+        XCTAssertFalse(skippedHoleWarning.exists)
+        XCTAssertFalse(app.alerts["Skipped Hole"].exists)
         XCTAssertEqual(app.staticTexts["holeStrokeCount"].label, "1 Stroke")
     }
 
@@ -92,6 +98,38 @@ final class GolfScoreUITests: XCTestCase {
         XCTAssertTrue(app.buttons["deleteStrokeButton_1"].exists)
         XCTAssertTrue(app.buttons["deleteStrokeButton_2"].exists)
         XCTAssertFalse(app.buttons["deleteStrokeButton_3"].exists)
+    }
+
+    func testStrokeNoteCanCancelClearAndSaveTrimmedMultilineText() {
+        app.buttons["addStrokeButton"].tap()
+        let noteButton = app.buttons["noteStrokeButton_1"]
+        XCTAssertTrue(noteButton.exists)
+
+        noteButton.tap()
+        XCTAssertTrue(app.navigationBars["Stroke 1"].waitForExistence(timeout: 2))
+        let editor = element("strokeNoteTextEditor")
+        let clearButton = app.buttons["clearStrokeNoteButton"]
+        XCTAssertTrue(clearButton.isHittable)
+        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 2))
+        editor.tap()
+        editor.typeText("  Fairway bunker\nNear the lip  ")
+        app.buttons["cancelStrokeNoteButton"].tap()
+        XCTAssertFalse(element("strokeNote_1").exists)
+
+        noteButton.tap()
+        editor.tap()
+        editor.typeText("  Fairway bunker\nNear the lip  ")
+        clearButton.tap()
+        app.buttons["cancelStrokeNoteButton"].tap()
+        XCTAssertFalse(element("strokeNote_1").exists)
+
+        noteButton.tap()
+        editor.tap()
+        editor.typeText("  Fairway bunker\nNear the lip  ")
+        app.buttons["saveStrokeNoteButton"].tap()
+
+        XCTAssertEqual(element("strokeNote_1").label, "Fairway bunker\nNear the lip")
+        XCTAssertEqual(noteButton.label, "Edit Note for Stroke 1")
     }
 
     func testPuttsReminderChecksBothNavigationDirectionsOncePerVisit() {
@@ -125,7 +163,7 @@ final class GolfScoreUITests: XCTestCase {
         XCTAssertEqual(element("scorecardHoleCount_10").label, "3")
         holeTenLink.tap()
 
-        XCTAssertFalse(app.navigationBars["Scorecard"].exists)
+        XCTAssertTrue(app.navigationBars["Scorecard"].waitForNonExistence(timeout: 2))
         XCTAssertTrue(app.navigationBars["Hole 10"].exists)
         app.buttons["holeBackButton"].tap()
         XCTAssertTrue(app.navigationBars["Hole 9"].exists)
@@ -148,6 +186,9 @@ final class GolfScoreUITests: XCTestCase {
 
         let resetButton = app.buttons["resetAllButton"]
         scrollToElement(resetButton)
+        let shareButton = app.buttons["shareScorecardButton"]
+        XCTAssertTrue(shareButton.exists)
+        XCTAssertLessThan(shareButton.frame.minY, resetButton.frame.minY)
         resetButton.tap()
         let resetAlert = app.alerts["Reset All Holes?"]
         XCTAssertTrue(resetAlert.waitForExistence(timeout: 2))
@@ -158,7 +199,7 @@ final class GolfScoreUITests: XCTestCase {
         resetButton.tap()
         resetAlert.buttons["Reset"].tap()
 
-        XCTAssertFalse(app.navigationBars["Scorecard"].exists)
+        XCTAssertTrue(app.navigationBars["Scorecard"].waitForNonExistence(timeout: 2))
         XCTAssertTrue(app.navigationBars["Hole 1"].waitForExistence(timeout: 2))
         XCTAssertEqual(app.staticTexts["holeStrokeCount"].label, "0 Strokes")
     }
@@ -166,7 +207,7 @@ final class GolfScoreUITests: XCTestCase {
     func testStrokeAndSelectedHolePersistAcrossRelaunch() {
         app.buttons["holeNextButton"].tap()
         app.buttons["addStrokeButton"].tap()
-        app.alerts["Skipped Hole"].buttons["Close"].tap()
+        XCTAssertTrue(app.staticTexts["skippedHoleWarning"].exists)
 
         app.terminate()
         launch(arguments: ["-ui-testing"])

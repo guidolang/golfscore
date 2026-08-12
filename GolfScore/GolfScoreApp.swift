@@ -69,7 +69,10 @@ struct GolfScoreApp: App {
         }
 
         if scenePhase == .background {
-            scheduleBackgroundCleanup(after: .milliseconds(250))
+            // Locking and switching apps both transition through background.
+            // Give the protected-data notification time to identify a lock
+            // before ending the activity for a genuine app-background event.
+            scheduleBackgroundCleanup(after: .seconds(1))
             return
         }
 
@@ -101,8 +104,8 @@ struct GolfScoreApp: App {
             }
 
             guard scenePhase == .background,
-                  !isDeviceLocking,
-                  application.isProtectedDataAvailable else {
+                  application.applicationState == .background,
+                  !isDeviceLocking else {
                 return
             }
             await HoleLiveActivityController.shared.endAll()

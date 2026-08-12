@@ -81,6 +81,93 @@ final class RoundStoreTests: XCTestCase {
         XCTAssertEqual(persistence.savedRound, originalRound)
     }
 
+    func testSavingNoteTrimsAndPersistsText() throws {
+        let persistence = MemoryPersistence()
+        let store = RoundStore(persistence: persistence)
+        store.addStroke(to: 3)
+        let strokeID = try XCTUnwrap(store.hole(number: 3).strokes.first?.id)
+
+        XCTAssertTrue(store.saveNote("  Fairway bunker\n  ", for: strokeID, in: 3))
+
+        XCTAssertEqual(store.hole(number: 3).strokes.first?.note, "Fairway bunker")
+        XCTAssertEqual(persistence.savedRound, store.round)
+    }
+
+    func testSavingBlankNoteRemovesExistingNote() throws {
+        let persistence = MemoryPersistence()
+        let store = RoundStore(persistence: persistence)
+        store.addStroke(to: 3)
+        let strokeID = try XCTUnwrap(store.hole(number: 3).strokes.first?.id)
+        store.saveNote("First note", for: strokeID, in: 3)
+
+        XCTAssertTrue(store.saveNote(" \n\t ", for: strokeID, in: 3))
+
+        XCTAssertNil(store.hole(number: 3).strokes.first?.note)
+    }
+
+    func testScorecardCSVExportsOnlyRecordedStrokesInOrder() {
+        var round = RoundState.empty
+        round.holes[0].strokes = [
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 0), note: "Tee shot"),
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 1), note: nil)
+        ]
+        round.holes[9].strokes = [
+            StrokeRecord(timestamp: Date(timeIntervalSince1970: 2), note: "Approach")
+        ]
+
+        let csv = RoundStore.scorecardCSV(
+            for: round,
+            timeZone: TimeZone(secondsFromGMT: 2 * 60 * 60)!
+        )
+
+        XCTAssertEqual(
+            csv,
+            "Hole,Stroke,DateTime,Note\r\n"
+                + "1,1,1970-01-01T02:00:00+02:00,Tee shot\r\n"
+                + "1,2,1970-01-01T02:00:01+02:00,\r\n"
+                + "10,1,1970-01-01T02:00:02+02:00,Approach"
+        )
+    }
+
+    func testScorecardCSVEscapesCommasQuotesAndMultilineNotes() {
+        var round = RoundState.empty
+        round.holes[2].strokes = [
+            StrokeRecord(
+                timestamp: Date(timeIntervalSince1970: 0),
+                note: "Bunker, near the lip\nSaid \"fore\""
+            )
+        ]
+
+        let csv = RoundStore.scorecardCSV(
+            for: round,
+            timeZone: TimeZone(secondsFromGMT: 0)!
+        )
+
+        XCTAssertEqual(
+            csv,
+            "Hole,Stroke,DateTime,Note\r\n"
+                + "3,1,1970-01-01T00:00:00Z,\"Bunker, near the lip\nSaid \"\"fore\"\"\""
+        )
+    }
+
+    func testScorecardCSVForEmptyRoundContainsOnlyHeader() {
+        XCTAssertEqual(
+            RoundStore.scorecardCSV(for: .empty, timeZone: TimeZone(secondsFromGMT: 0)!),
+            "Hole,Stroke,DateTime,Note"
+        )
+    }
+
+    func testScorecardCSVDocumentUsesDatedCSVFilename() {
+        let document = ScorecardCSVDocument(
+            round: .empty,
+            date: Date(timeIntervalSince1970: 0),
+            timeZone: TimeZone(secondsFromGMT: 0)!
+        )
+
+        XCTAssertEqual(document.filename, "GolfScore-1970-01-01.csv")
+        XCTAssertEqual(String(decoding: document.contents, as: UTF8.self), "Hole,Stroke,DateTime,Note")
+    }
+
     func testResetAllClearsEveryHole() {
         let store = RoundStore(persistence: MemoryPersistence())
         store.addStroke(to: 1)

@@ -3,10 +3,12 @@ import Foundation
 struct StrokeRecord: Codable, Equatable, Identifiable {
     let id: UUID
     let timestamp: Date
+    var note: String?
 
-    init(id: UUID = UUID(), timestamp: Date = Date()) {
+    init(id: UUID = UUID(), timestamp: Date = Date(), note: String? = nil) {
         self.id = id
         self.timestamp = timestamp
+        self.note = note
     }
 }
 

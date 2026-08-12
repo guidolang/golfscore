@@ -7,13 +7,17 @@ struct HoleDetailView: View {
     let onShowScorecard: () -> Void
 
     @State private var strokePendingDeletion: StrokeDeletionRequest?
+    @State private var strokeNoteRequest: StrokeNoteRequest?
     @State private var isShowingPuttsReminder = false
-    @State private var isShowingSkippedHoleReminder = false
     @State private var puttsReminder = PuttsReminder()
     @State private var strokeHapticTrigger = 0
 
     private var hole: HoleScore {
         store.hole(number: holeNumber)
+    }
+
+    private var shouldShowSkippedHoleWarning: Bool {
+        holeNumber > 1 && store.hole(number: holeNumber - 1).strokes.isEmpty
     }
 
     var body: some View {
@@ -27,14 +31,8 @@ struct HoleDetailView: View {
                             .accessibilityIdentifier("holeStrokeCount")
 
                         Button {
-                            let isFirstStroke = hole.strokes.isEmpty
                             if store.addStroke(to: holeNumber) {
                                 strokeHapticTrigger += 1
-                                if isFirstStroke,
-                                   holeNumber > 1,
-                                   store.hole(number: holeNumber - 1).strokes.isEmpty {
-                                    isShowingSkippedHoleReminder = true
-                                }
                             }
                         } label: {
                             Label("Stroke", systemImage: "plus")
@@ -47,6 +45,24 @@ struct HoleDetailView: View {
                         .accessibilityLabel("Add Stroke")
                         .accessibilityIdentifier("addStrokeButton")
                         .sensoryFeedback(.impact(weight: .light), trigger: strokeHapticTrigger)
+
+                        if shouldShowSkippedHoleWarning {
+                            Text("No strokes recorded for the previous hole")
+                                .font(.callout.weight(.semibold))
+                                .foregroundStyle(.red)
+                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(
+                                    Color.red.opacity(0.1),
+                                    in: RoundedRectangle(cornerRadius: 12)
+                                )
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.red, lineWidth: 1)
+                                }
+                                .accessibilityIdentifier("skippedHoleWarning")
+                        }
                     }
 
                     VStack(alignment: .leading, spacing: 0) {
@@ -62,12 +78,23 @@ struct HoleDetailView: View {
                         } else {
                             LazyVStack(spacing: 0) {
                                 ForEach(Array(hole.strokes.enumerated()), id: \.element.id) { index, stroke in
-                                    StrokeLogRow(number: index + 1, stroke: stroke) {
-                                        strokePendingDeletion = StrokeDeletionRequest(
-                                            id: stroke.id,
-                                            number: index + 1
-                                        )
-                                    }
+                                    StrokeLogRow(
+                                        number: index + 1,
+                                        stroke: stroke,
+                                        onAddNote: {
+                                            strokeNoteRequest = StrokeNoteRequest(
+                                                id: stroke.id,
+                                                number: index + 1,
+                                                text: stroke.note ?? ""
+                                            )
+                                        },
+                                        onDelete: {
+                                            strokePendingDeletion = StrokeDeletionRequest(
+                                                id: stroke.id,
+                                                number: index + 1
+                                            )
+                                        }
+                                    )
                                     if index < hole.strokes.count - 1 {
                                         Divider()
                                     }
@@ -150,10 +177,19 @@ struct HoleDetailView: View {
                 }
             )
         }
-        .alert("Skipped Hole", isPresented: $isShowingSkippedHoleReminder) {
-            Button("Close", role: .cancel) {}
-        } message: {
-            Text("You didn't record any strokes for the previous hole.")
+        .sheet(item: $strokeNoteRequest) { request in
+            StrokeNoteEditor(
+                strokeNumber: request.number,
+                initialText: request.text,
+                onSave: { text in
+                    store.saveNote(text, for: request.id, in: holeNumber)
+                    strokeNoteRequest = nil
+                },
+                onCancel: {
+                    strokeNoteRequest = nil
+                }
+            )
+            .presentationDetents([.large])
         }
         .alert("Reminder", isPresented: $isShowingPuttsReminder) {
             Button("Close", role: .cancel) {}
@@ -174,6 +210,12 @@ struct HoleDetailView: View {
 private struct StrokeDeletionRequest: Identifiable {
     let id: UUID
     let number: Int
+}
+
+private struct StrokeNoteRequest: Identifiable {
+    let id: UUID
+    let number: Int
+    let text: String
 }
 
 struct PuttsReminder {
@@ -204,25 +246,107 @@ struct PuttsReminder {
 private struct StrokeLogRow: View {
     let number: Int
     let stroke: StrokeRecord
+    let onAddNote: () -> Void
     let onDelete: () -> Void
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text("Stroke \(number)")
-                .font(.body.weight(.semibold))
-            Spacer(minLength: 12)
-            StrokeTimestampText(date: stroke.timestamp)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.trailing)
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Stroke \(number)")
+                    .font(.body.weight(.semibold))
+                Spacer(minLength: 12)
+                StrokeTimestampText(date: stroke.timestamp)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.trailing)
 
-            Button(role: .destructive, action: onDelete) {
-                Image(systemName: "trash")
+                Button(action: onAddNote) {
+                    Image(systemName: "note.text.badge.plus")
+                }
+                .accessibilityLabel(stroke.note == nil ? "Add Note to Stroke \(number)" : "Edit Note for Stroke \(number)")
+                .accessibilityIdentifier("noteStrokeButton_\(number)")
+
+                Button(role: .destructive, action: onDelete) {
+                    Image(systemName: "trash")
+                }
+                .accessibilityLabel("Delete Stroke \(number)")
+                .accessibilityIdentifier("deleteStrokeButton_\(number)")
             }
-            .accessibilityLabel("Delete Stroke \(number)")
-            .accessibilityIdentifier("deleteStrokeButton_\(number)")
+
+            if let note = stroke.note, !note.isEmpty {
+                Text(note)
+                    .font(.body.italic())
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("strokeNote_\(number)")
+            }
         }
         .padding(.horizontal)
         .padding(.vertical, 14)
+    }
+}
+
+private struct StrokeNoteEditor: View {
+    let strokeNumber: Int
+    let onSave: (String) -> Void
+    let onCancel: () -> Void
+
+    @State private var text: String
+    @FocusState private var isTextEditorFocused: Bool
+
+    init(
+        strokeNumber: Int,
+        initialText: String,
+        onSave: @escaping (String) -> Void,
+        onCancel: @escaping () -> Void
+    ) {
+        self.strokeNumber = strokeNumber
+        self.onSave = onSave
+        self.onCancel = onCancel
+        _text = State(initialValue: initialText)
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 16) {
+                TextEditor(text: $text)
+                    .focused($isTextEditorFocused)
+                    .padding(8)
+                    .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+                    .accessibilityLabel("Stroke Note")
+                    .accessibilityIdentifier("strokeNoteTextEditor")
+
+                Button("Clear") {
+                    text = ""
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .foregroundStyle(.primary)
+                .background(
+                    Color(.secondarySystemFill),
+                    in: RoundedRectangle(cornerRadius: 8)
+                )
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("clearStrokeNoteButton")
+            }
+            .padding()
+            .navigationTitle("Stroke \(strokeNumber)")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", action: onCancel)
+                        .accessibilityIdentifier("cancelStrokeNoteButton")
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        onSave(text)
+                    }
+                    .accessibilityIdentifier("saveStrokeNoteButton")
+                }
+            }
+            .task {
+                await Task.yield()
+                isTextEditorFocused = true
+            }
+        }
     }
 }
